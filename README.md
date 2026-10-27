@@ -25,7 +25,8 @@ Run every command from this folder.
 | 4 | `python trust_checks.py` | Permutation test and feature stability on simulated data (n = 24, 60, 100) | `results/trust_checks_*.csv` |
 | 5 | `python abide_prepare.py` | Cleans the ABIDE table in `data/` | `data/abide_clean.csv` |
 | 6 | `python abide_run.py` | The same pipeline on real ABIDE thickness data (218 children aged 7 to 18) | `results/abide_*` |
-| 7 | `python make_figures.py` | Draws the five paper figures from the result files | `results/figures/` |
+| 7 | `python svm_comparison.py` | Linear SVM vs logistic regression on the ABIDE data, same leakage-free pipeline | `results/abide_svm_comparison.csv` |
+| 8 | `python make_figures.py` | Draws the five paper figures from the result files | `results/figures/` |
 
 Steps 3, 4 and 6 take several minutes each (they use all CPU cores).
 
@@ -42,5 +43,5 @@ region-level features plus age, and a label vector `y` (1 = Dp140-, 0 = Dp140+).
 
 ## Pipeline in one line
 median imputation -> standardisation -> univariate feature selection (k = 3, 5, 8) -> logistic
-regression with balanced class weights, all re-fitted inside every fold; outer repeated stratified
+regression with balanced class weights (a linear SVM is available as a comparator, `model="svm"`), all re-fitted inside every fold; outer repeated stratified
 5-fold, inner 3-fold grid search over k and C.

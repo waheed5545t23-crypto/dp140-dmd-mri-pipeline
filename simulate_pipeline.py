@@ -32,6 +32,7 @@ from scipy import stats
 from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
 from sklearn.metrics import (accuracy_score, balanced_accuracy_score, f1_score,
                              precision_score, recall_score, roc_auc_score)
 from sklearn.model_selection import (GridSearchCV, RepeatedStratifiedKFold,
@@ -158,25 +159,30 @@ def group_statistics(df, y, rng, n_perm=5000):
 # --------------------------------------------------------------------------- #
 # 3. Classifier: ONE pipeline, every learned step is re-fitted inside each fold
 # --------------------------------------------------------------------------- #
-def make_pipe(k=5, C=0.1):
+def make_pipe(k=5, C=0.1, model="logreg"):
+    """model: 'logreg' (default, used for all main results) or 'svm' (linear SVM comparator)."""
+    if model == "svm":
+        clf = SVC(kernel="linear", C=C, class_weight="balanced")
+    else:
+        clf = LogisticRegression(C=C, max_iter=2000, class_weight="balanced")
     return Pipeline([
         ("impute", SimpleImputer(strategy="median")),
         ("scale", StandardScaler()),
         ("select", SelectKBest(f_classif, k=k)),
-        ("clf", LogisticRegression(C=C, max_iter=2000, class_weight="balanced")),
+        ("clf", clf),
     ])
 
 
-def nested_cv(X, y, seed, n_repeats=5):
+def nested_cv(X, y, seed, n_repeats=5, model="logreg"):
     """Outer: repeated stratified 5-fold. Inner: 3-fold grid search on k and C."""
     grid = {"select__k": [3, 5, 8], "clf__C": [0.01, 0.1, 1.0]}
     outer = RepeatedStratifiedKFold(n_splits=5, n_repeats=n_repeats, random_state=seed)
     rows, sel_counts, n_folds = [], np.zeros(X.shape[1]), 0
     for i, (tr, te) in enumerate(outer.split(X, y)):
         inner = StratifiedKFold(3, shuffle=True, random_state=seed + i)
-        gs = GridSearchCV(make_pipe(), grid, cv=inner, scoring="roc_auc", n_jobs=1)
+        gs = GridSearchCV(make_pipe(model=model), grid, cv=inner, scoring="roc_auc", n_jobs=1)
         gs.fit(X[tr], y[tr])
-        proba = gs.predict_proba(X[te])[:, 1]
+        proba = gs.decision_function(X[te])   # monotone in the probability, so AUC is unchanged
         pred = gs.predict(X[te])
         rows.append({
             "auc": roc_auc_score(y[te], proba),
@@ -192,12 +198,12 @@ def nested_cv(X, y, seed, n_repeats=5):
     return pd.DataFrame(rows), sel_counts / n_folds
 
 
-def oof_auc(X, y, seed, repeats=3):
+def oof_auc(X, y, seed, repeats=3, model="logreg"):
     """Pooled out-of-fold AUC (fixed hyper-parameters), averaged over CV repeats."""
     aucs = []
     for r in range(repeats):
         cv = StratifiedKFold(5, shuffle=True, random_state=seed + r)
-        s = cross_val_predict(make_pipe(), X, y, cv=cv, method="decision_function")
+        s = cross_val_predict(make_pipe(model=model), X, y, cv=cv, method="decision_function")
         aucs.append(roc_auc_score(y, s))
     return float(np.mean(aucs))
 

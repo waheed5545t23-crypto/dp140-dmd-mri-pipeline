@@ -1,0 +1,9 @@
+analysis,model,n,auc,auc_sd,balanced_acc,f1
+"nested CV, all 218",logreg,218,0.609,0.075,0.567,0.55
+"nested CV, all 218",svm,218,0.607,0.081,0.573,0.563
+"random subsamples, 40 draws",logreg,24,0.527,0.141,,
+"random subsamples, 40 draws",svm,24,0.533,0.132,,
+"random subsamples, 40 draws",logreg,60,0.563,0.083,,
+"random subsamples, 40 draws",svm,60,0.564,0.085,,
+"random subsamples, 40 draws",logreg,100,0.59,0.058,,
+"random subsamples, 40 draws",svm,100,0.588,0.059,,
