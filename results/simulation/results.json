@@ -1,0 +1,69 @@
+{
+  "note": "SYNTHETIC data. Not real results.",
+  "worked_example": {
+    "n": 60,
+    "d": 0.8,
+    "n_Dp140_pos": 21,
+    "n_Dp140_neg": 39
+  },
+  "nested_cv_mean": {
+    "auc": 0.839,
+    "accuracy": 0.787,
+    "balanced_acc": 0.769,
+    "precision": 0.847,
+    "recall": 0.838,
+    "f1": 0.834
+  },
+  "nested_cv_sd_across_folds": {
+    "auc": 0.112,
+    "accuracy": 0.11,
+    "balanced_acc": 0.121,
+    "precision": 0.107,
+    "recall": 0.139,
+    "f1": 0.092
+  },
+  "nested_cv_best_k_counts": {
+    "8": 12,
+    "3": 7,
+    "5": 6
+  },
+  "nested_cv_best_C_counts": {
+    "1.0": 18,
+    "0.01": 5,
+    "0.1": 2
+  },
+  "permutation": {
+    "observed_oof_auc": 0.877,
+    "null_mean": 0.498,
+    "null_95pct": 0.652,
+    "p_value": 0.005
+  },
+  "feature_selection_frequency": {
+    "FA_corpus_callosum": 1.0,
+    "MD_cerebellar_WM": 1.0,
+    "MD_occipital_WM": 0.8,
+    "FA_SLF": 0.72,
+    "AD_corpus_callosum": 0.68,
+    "AD_cerebellar_WM": 0.6,
+    "FA_cerebellar_WM": 0.28,
+    "vol_cerebellum": 0.2,
+    "vol_total_brain": 0.16,
+    "thick_parietal": 0.12,
+    "MD_SLF": 0.08,
+    "MD_corpus_callosum": 0.08,
+    "thick_temporal": 0.08,
+    "thick_frontal": 0.04,
+    "vol_gray_matter": 0.04,
+    "FA_fornix": 0.0
+  },
+  "significant_features_FWER_0.05": [
+    "FA_corpus_callosum",
+    "MD_cerebellar_WM"
+  ],
+  "true_signal_features": [
+    "MD_cerebellar_WM",
+    "AD_cerebellar_WM",
+    "MD_occipital_WM",
+    "FA_corpus_callosum"
+  ]
+}

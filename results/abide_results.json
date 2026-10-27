@@ -1,0 +1,1 @@
+{"n": 218, "autism": 107, "control": 111, "nested": {"auc": 0.609, "balanced_acc": 0.567, "f1": 0.55}, "oof_auc": 0.621, "null95": 0.578, "perm_p": 0.005, "stable_features": 3}
